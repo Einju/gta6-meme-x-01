@@ -31,7 +31,14 @@ try {
   const outputFilePath = path.join(outputDir, 'POST.json');
   fs.writeFileSync(outputFilePath, JSON.stringify(post, null, 2));
 
-  console.log(post.url);
+  const writtenRaw = fs.readFileSync(outputFilePath, 'utf8');
+  const writtenPost = JSON.parse(writtenRaw);
+  if (!writtenPost || writtenPost.url !== post.url) {
+    console.error('Error: Written output POST.json verification failed or URL mismatch.');
+    process.exit(1);
+  }
+
+  console.log(`Verified output POST.json: ${post.url}`);
 } catch (err: any) {
   console.error(`Error processing post: ${err.message}`);
   process.exit(1);
